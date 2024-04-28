@@ -1,4 +1,3 @@
-// taskRoutes.js
 const express = require('express');
 const router = express.Router();
 const connection = require('./db');
@@ -15,7 +14,6 @@ router.get('/tasks', verifyToken, async (req, res) => {
     }
 });
 
-// Protect this route with isAdmin middleware
 router.delete('/tasks/:id', verifyToken, isAdmin, async (req, res) => {
     try {
         const taskId = req.params.id;
@@ -28,10 +26,9 @@ router.delete('/tasks/:id', verifyToken, isAdmin, async (req, res) => {
     }
 });
 
-// Get tasks for the authenticated user
 router.get('/getTask', verifyToken, async (req, res) => {
     try {
-         const userId = req.email; // Retrieve user ID from the authenticated user
+         const userId = req.email; 
          const query = 'SELECT * FROM tasks WHERE user_id = ?';
          connection.query(query,userId,(error,result)=>{
             if(error) res.status(500).json("Failed");
@@ -50,7 +47,7 @@ router.get('/getAllTask', verifyToken, async (req, res) => {
     try {
         const userRole = req.role;
         if(req.role==="admin"){
-            const userId = req.email; // Retrieve user ID from the authenticated user
+            const userId = req.email; 
             const query = 'SELECT * FROM tasks';
             connection.query(query, (error, result) => {
                 if (error) res.status(500).json("Failed");
@@ -68,10 +65,9 @@ router.get('/getAllTask', verifyToken, async (req, res) => {
 });
 
 
-// Create a new task for the authenticated user
+
 router.post('/addtask', verifyToken, async (req, res) => {
     try {
-         //const userId = req.user.id; // Retrieve user ID from the authenticated user
         const userId = req.email;
         const { title, description, status } = req.body;
         const query = 'INSERT INTO tasks (title, description, status, user_id) VALUES (?, ?, ?, ?)';
@@ -79,12 +75,11 @@ router.post('/addtask', verifyToken, async (req, res) => {
 
         res.status(201).json({ message: 'Task created successfully' });
     } catch (error) {
-        //console.error('Error creating task:', error);
         res.status(500).json({ error: 'Error creating task' });
     }
 });
 
-// Update task associated with the authenticated user
+
 router.put('/updateTask/:id', verifyToken, async (req, res) => {
     try {
         const userId = req.email; // Retrieve user ID from the authenticated user
@@ -114,18 +109,17 @@ router.put('/updateTask/:id', verifyToken, async (req, res) => {
     }
 });
 
-// Delete task associated with the authenticated user
+
 router.delete('/deleteTask/:id', verifyToken, async (req, res) => {
     try {
-        const userId = req.email; // Retrieve user ID from the authenticated user
+        const userId = req.email; 
         const taskId = req.params.id;
         const query = 'DELETE FROM tasks WHERE id = ? AND user_id = ?';
         const values = [
             taskId,
             userId    
         ]
-        // await connection.query(query, [taskId, userId]);
-        // res.json({ message: 'Task deleted successfully' });
+ 
         connection.query(query,values,(error,result)=>{
             if (error) res.status(500).json("Failed");
             res.status(200).json({
