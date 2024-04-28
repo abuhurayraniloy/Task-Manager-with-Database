@@ -99,8 +99,8 @@ router.delete('/deleteTask/:id', verifyToken, async (req, res) => {
         const taskId = req.params.id;
         const query = 'DELETE FROM tasks WHERE id = ? AND user_id = ?';
         const values = [
-            userId,
-            taskId
+            taskId,
+            userId    
         ]
         // await connection.query(query, [taskId, userId]);
         // res.json({ message: 'Task deleted successfully' });
