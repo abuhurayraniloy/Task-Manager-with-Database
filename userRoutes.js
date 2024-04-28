@@ -8,10 +8,10 @@ const { generateToken, comparePassword } = require('./auth');
 
 router.post('/register', async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, role } = req.body;
         const hashedPassword = bcrypt.hashSync(password, 10);
-        const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-        await connection.query(query, [username, email, hashedPassword]);
+        const query = 'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)';
+        await connection.query(query, [username, email, hashedPassword, role]);
         res.json({ message: 'User registered successfully' });
     } catch (error) {
         console.error('Error registering user:', error);
@@ -51,7 +51,8 @@ router.post('/login', async (req, res) => {
                 if (isValid) {
                     const token = jwt.sign({
                         email: result[0].email,
-                        username: result[0].username
+                        username: result[0].username,
+                        role : result[0].role
                     }, process.env.JWT_SECRET, {
                         expiresIn: '1h'
                     });

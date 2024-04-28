@@ -46,6 +46,28 @@ router.get('/getTask', verifyToken, async (req, res) => {
     }
 });
 
+router.get('/getAllTask', verifyToken, async (req, res) => {
+    try {
+        const userRole = req.role;
+        if(req.role==="admin"){
+            const userId = req.email; // Retrieve user ID from the authenticated user
+            const query = 'SELECT * FROM tasks';
+            connection.query(query, (error, result) => {
+                if (error) res.status(500).json("Failed");
+                res.status(200).json({
+                    message: "Successfully get task",
+                    task: result
+                })
+            })
+        }else res.status(404).json("You are not an admin");
+        
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ error: 'Error fetching tasks' });
+    }
+});
+
+
 // Create a new task for the authenticated user
 router.post('/addtask', verifyToken, async (req, res) => {
     try {

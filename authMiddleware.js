@@ -27,9 +27,10 @@ const verifyToken = (req, res, next) => {
     try {
         const token = authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const { email, username } = decoded;
+        const { email, username, role } = decoded;
         req.email = email;
         req.name = username;
+        req.role = role;
         next();
     } catch {
         next('Authentication Failure');
